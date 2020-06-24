@@ -34,6 +34,11 @@ spock-geb-quickstart-simple-example/build/geb-spock-reports/index.html
 spock-geb-quickstart-more-examples/build/geb-spock-reports/index.html
 ```
 
+View the sample test projects:
+
+1. [Simplest possible project](https://github.com/Roche/spock-geb-quickstart/tree/master/spock-geb-quickstart-simple-example)
+2. [A more complicated project, with multiple source sets](https://github.com/Roche/spock-geb-quickstart/tree/master/spock-geb-quickstart-more-examples)
+
 Read more:
 1. Simple introduction: https://craigatk.github.io/spock-geb-intro/#/31
 2. Full docs: http://www.gebish.org/manual/current/
