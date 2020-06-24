@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+sourceCompatibility = 11
+
+task dockerTest(type: Test) {
+    description = 'Runs the tests with a dockerized browser.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    outputs.upToDateWhen { false }
+    systemProperty 'spring.profiles.active', 'docker'
+}
+
+dependencies {
+    compile project(':spock-geb-quickstart')
+}
+
+test {
+    systemProperties "geb.build.reportsDir": "$reportsDir/geb"
+}

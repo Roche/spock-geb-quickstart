@@ -1,0 +1,358 @@
+<!--
+Copyright 2017-2019 Tilman Ginzel, AOE GmbH
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="spec.css" />
+</head>
+<body id="top">
+
+<%
+def stats = utils.stats( data )
+
+def gebUtils = new com.aoe.gebspockreports.GebReportUtils()
+def gebReport = gebUtils.readGebReport()
+def specReport = gebReport.findSpecByLabel(utils.getSpecClassName(data))
+
+def writeIssuesOrSees = { issues, description ->
+if ( issues?.value() ) { %>
+<div class="issues">
+    <h3>$description:</h3>
+    <ul> <%
+        issues.value().each { issue ->
+        %>
+        <li>
+            <% if (utils.isUrl(issue)) { %>
+            <a href="$issue">$issue</a>
+            <% } else { out << issue } %>
+        </li> <%
+        } %>
+    </ul>
+</div> <%
+}
+}
+
+def writeStackTrace = { error, index, featureName ->
+    def uniqueId = "${featureName.hashCode()}-${index}" %>
+    <pre>$error</pre>
+    <input type="checkbox" id="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-checkbox" checked />
+    <label for="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-label" >Stacktrace</label>
+    <div>
+        <pre class="stacktrace"><% gebUtils.writeStacktrace(error, out) %></pre>
+    </div>
+<% }
+
+def writeReportInfo = { reportInfo ->
+    if (reportInfo) { %>
+        <h3>Report Info:</h3>
+        <ul>
+        <% reportInfo.each { info -> %>
+            <li>$info</li>
+        <% } %>
+        </ul> <%
+    }
+}
+
+%>
+
+<h1>Report for ${utils.getSpecClassName(data)}</h1>
+<hr>
+<span class="date-test-ran">Created on ${new Date()} by ${System.properties['user.name']}</span>
+<span class="back-link"><a href="index.html">Back to index</a></span>
+
+<%
+// spec title and narrative
+def specTitle = utils.specAnnotation(data, spock.lang.Title)?.value() ?: ''
+def narrative = (data.info.narrative ?: '')
+def reportHeader = utils.specHeaders(data)
+
+if (specTitle) { %> <h4 class="spec-title">$specTitle</h4> <% }
+if (narrative) { %> <pre class="narrative">$narrative</pre> <% }
+
+// issues/see annotations
+writeIssuesOrSees(utils.specAnnotation(data, spock.lang.Issue), 'Issues')
+writeIssuesOrSees(utils.specAnnotation(data, spock.lang.See), 'See')
+
+def summaryCssClass = stats.successRate < 1 ? 'failure' : 'passed'
+%>
+
+<div>
+    <h2>Summary</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Executed features</th>
+            <th>Failures</th>
+            <th>Errors</th>
+            <th>Skipped</th>
+            <th>Success rate</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>${stats.totalRuns}</td>
+            <td>${stats.failures}</td>
+            <td>${stats.errors}</td>
+            <td>${stats.skipped}</td>
+            <td class="$summaryCssClass">${fmt.toPercentage(stats.successRate)}</td>
+            <td>${fmt.toTimeDuration(stats.time)}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<% if (reportHeader) { %>
+<h2>Report Header</h2>
+<ul>
+    <% reportHeader.each { header -> %>
+    <li>$header</li>
+    <% } %>
+</ul>
+<% } %>
+
+
+<h2>Features</h2>
+<ul id="toc">
+    <% features.eachFeature { name, result, blocks, iterations, params ->
+    def classSuffix = result.toLowerCase()
+    classSuffix = classSuffix.startsWith('fail') ? 'failure' : classSuffix
+    %>
+    <li><a href="#${name.hashCode()}" class="feature-toc-$classSuffix">$name</a></li>
+    <% } %>
+</ul>
+
+<hr>
+
+<%
+def featureCount = 0
+features.eachFeature { name, result, blocks, iterations, params ->
+def failedIterations = iterations.findAll { it.dataValues || it.errors }
+def problems = iterations.findAll { it.errors }
+def isFailure = result in ['FAIL', 'FAILURE']
+def isError = result == 'ERROR'
+def isIgnored = result == 'IGNORED'
+def cssClass = isIgnored ? 'ignored' : (isError ? 'error' : (isFailure ? 'failure' : ''))
+
+featureCount += isIgnored ? 0 : 1
+def gebFeatureReport = specReport?.findFeatureByNumberAndName(featureCount, name)
+def gebArtifacts = gebFeatureReport?.artifacts
+%>
+
+<div class="feature feature-$cssClass">
+    <div class="feature-heading feature-heading-$cssClass" id="${name.hashCode()}">
+        <span class="feature-name feature-name-$cssClass">$name</span>
+
+        <%
+        def ignoreReason = description.getAnnotation(spock.lang.Ignore)?.value()
+        if (ignoreReason) { %>
+        <p class="ignore-reason">$ignoreReason</p>
+        <% } %>
+    </div>
+
+    <!-- print feature report info -->
+    <%
+    if (!isIgnored) {
+        if (utils.isUnrolled(delegate)) {
+            writeReportInfo(utils.nextSpecExtraInfo(data))
+        } else {
+            (1..iterations.size()).each {
+                writeReportInfo(utils.nextSpecExtraInfo(data))
+            }
+        }
+    }
+    %>
+
+    <!-- print name and issue/see annotation-->
+    <%
+    writeIssuesOrSees(description.getAnnotation(spock.lang.Issue), 'Issues')
+    writeIssuesOrSees(description.getAnnotation(spock.lang.See), 'See')
+    %>
+
+    <!-- print given, when, then, ... blocks -->
+    <h3>Code Blocks:</h3>
+    <table>
+        <% blocks.forEach { block -> %>
+        <tr class="${isIgnored ? 'ignored' : ''}">
+            <td class="code-block-kind" colspan="1">
+                <p>$block.kind</p>
+            </td>
+            <td class="code-block-text" colspan="9">
+                <p>$block.text</p>
+                <% if (block.sourceCode) {
+                %><pre class="code"><%
+                block.sourceCode.each { out << it << System.getProperty("line.separator") }
+                %></pre><%
+                }
+                %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+
+    <!-- print data tables if feature failed -->
+    <%
+    if (params && failedIterations) {
+    def failCount = iterations.findAll { it.failures || it.errors }.size()
+    def passedCount = iterations.size() - failCount
+    %>
+
+    <h3>Data Table ($passedCount/${iterations.size()} passed):</h3>
+    <table>
+        <thead>
+            <tr>
+                <% params.forEach { param -> %> <th>$param</th> <% }%>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% failedIterations.forEach { iteration -> %>
+        <tr class="ex-${iteration.errors ? 'fail' : 'pass'}">
+            <% iteration.dataValues.each { dataValue -> %>
+            <td>$dataValue</td>
+            <% } %>
+            <td>${iteration.errors ? 'FAIL' : 'OK'}</td>
+        </tr>
+        <% }%>
+        </tbody>
+    </table>
+    <% } %>
+
+    <!-- print geb artifacts -->
+    <% if (gebArtifacts) { %>
+
+    <h3>Geb Artifacts:</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Label</th>
+            <th>Image</th>
+            <th>Html</th>
+            <th>Har</th>
+            <th>Logs</th>
+            <th>Page object</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% gebArtifacts.sort { it.number }.each { artifact ->
+        def label = artifact.label?.replaceFirst(name+"-", '')
+        def trCssClass = label.endsWith('-failure') ? 'geb-failure' : ''
+        def imageFile = "./" + artifact.files.find { it.endsWith('png') }
+        def domSnapshotFile = "./" + artifact.files.find { it.endsWith('html') }
+        def harFile = "./" + artifact.files.find { it.endsWith('har') }
+        def logsFile = "./" + artifact.files.find { it.endsWith('txt') }
+        %>
+        <tr class="$trCssClass">
+            <td>$label</td>
+            <td><a href="$imageFile" target="_blank">png</a></td>
+            <td><a href="$domSnapshotFile" target="_blank">html</a></td>
+            <td><a href="$harFile" target="_blank">har</a></td>
+            <td><a href="$logsFile" target="_blank">logs</a></td>
+            <td>${artifact.pageObject}</td>
+        </tr>
+        <%
+        } %>
+        </tbody>
+    </table>
+    <% } %>
+
+    <!-- print problems -->
+    <%
+    if (problems) {
+    %>
+    <div class="problem-description">
+        <div class="problem-header">The following problems occurred:</div>
+        <div>
+            <ul>
+                <% problems.eachWithIndex { problem, index ->
+                if (problem.dataValues) { %>
+                <li>Input: $problem.dataValues</li>
+                <ul class="margin-bottom-16">
+                    <% problem.errors.each { error ->  %>
+                    <li>
+                        <% writeStackTrace(error, index, name) %>
+                    </li>
+                    <% } %>
+                </ul>
+                <% } else {
+                problems.errors.forEach { error -> %>
+                <li><% writeStackTrace(error[0], index, name) %></li>
+                <% }
+                }
+                } %>
+            </ul>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+<%
+gebFeatureReport?.addedToReport = true
+} %>
+
+<%
+def unassignedArtifacts = specReport?.getUnassignedGebArtifacts()
+if (unassignedArtifacts) {
+%>
+
+<h2>Unassigned Geb Artifacts</h2>
+<span>The following artifacts could not be mapped to a feature.</span>
+
+<div class="geb-artifacts">
+    <table>
+        <thead>
+        <tr>
+            <th>Label</th>
+            <th>Image</th>
+            <th>Html</th>
+            <th>Har</th>
+            <th>Logs</th>
+            <th>Page object</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% unassignedArtifacts.forEach { artifact ->
+        def label = artifact.label
+        def imageFile = "./" + artifact.files.find { it.endsWith('png') }
+        def domSnapshotFile = "./" + artifact.files.find { it.endsWith('html') }
+        def harFile = "./" + artifact.files.find { it.endsWith('har') }
+        def logsFile = "./" + artifact.files.find { it.endsWith('txt') }
+        %>
+        <tr>
+            <td>$label</td>
+            <td><a href="$imageFile">png</a></td>
+            <td><a href="$domSnapshotFile">html</a></td>
+            <td><a href="$harFile" target="_blank">har</a></td>
+            <td><a href="$logsFile" target="_blank">logs</a></td>
+            <td>${artifact.pageObject}</td>
+        </tr>
+        <%
+        } %>
+        </tbody>
+    </table>
+</div>
+<% } %>
+
+<div class="footer">
+    Generated by <a href="https://github.com/renatoathaydes/spock-reports" target="_blank">Athaydes spock-reports</a>.
+    Template modifications by <a href="https://github.com/AOEpeople/geb-spock-reports" target="_blank">geb-spock-reports</a>.
+</div>
+</body>
+</html>

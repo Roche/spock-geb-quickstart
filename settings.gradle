@@ -1,0 +1,5 @@
+rootProject.name = 'spock-geb-quickstart-root'
+
+include 'spock-geb-quickstart'
+include 'spock-geb-quickstart-simple-example'
+include 'spock-geb-quickstart-more-examples'
