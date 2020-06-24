@@ -1,0 +1,111 @@
+plugins {
+    id 'pl.allegro.tech.build.axion-release'
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
+group = 'com.roche.spock.geb'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+scmVersion {
+    tag {
+        prefix = 'felix'
+    }
+
+    versionCreator 'versionWithBranch'
+
+    branchVersionIncrementer = [
+            'master': 'incrementMinor',
+            '.*'    : 'incrementPatch'
+    ]
+}
+
+version = scmVersion.version
+
+sourceCompatibility = 8
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + configurations.testCompile + sourceSets.test.output
+        runtimeClasspath += output + compileClasspath + configurations.testRuntime + sourceSets.test.output
+    }
+}
+
+idea {
+    module {
+        testSourceDirs += sourceSets.integrationTest.java.srcDirs
+        testSourceDirs += sourceSets.integrationTest.groovy.srcDirs
+        testResourceDirs += sourceSets.integrationTest.resources.srcDirs
+        scopes.TEST.plus += [configurations.integrationTestCompile]
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+task dockerIntegrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    systemProperty 'spring.profiles.active', 'docker'
+}
+
+task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+    from sourceSets.main.allGroovy
+}
+
+ext {
+    gebVersion = "3.4"
+    seleniumVersion = "3.141.59"
+    springBootVersion = '2.3.0.RELEASE'
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.13'
+
+    compile 'com.aoe:geb-spock-reports:0.2.6'
+    compile ("com.athaydes:spock-reports:1.7.1") { transitive = false }
+
+    compile "org.gebish:geb-spock:${gebVersion}"
+
+    compile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
+    compile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
+
+    compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    compile("io.github.bonigarcia:webdrivermanager:4.0.0")
+    compile 'net.lightbody.bmp:browsermob-core:2.1.5'
+
+    compile "org.testcontainers:selenium:1.14.2"
+    compile "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+
+    compile "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    compile "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+}
+
+test {
+    systemProperties "geb.build.reportsDir": "$reportsDir/geb"
+}
+
+publishing {
+    publications {
+        bootJava(MavenPublication) {
+            from components.java
+            artifact tasks.sourceJar
+        }
+    }
+}

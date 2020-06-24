@@ -1,0 +1,50 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+sourceCompatibility = 11
+
+sourceSets {
+    acceptance {
+        compileClasspath += sourceSets.main.output + configurations.testCompile + sourceSets.test.output
+        runtimeClasspath += output + compileClasspath + configurations.testRuntime + sourceSets.test.output
+    }
+}
+
+idea {
+    module {
+        testSourceDirs += sourceSets.acceptance.java.srcDirs
+        testSourceDirs += sourceSets.acceptance.groovy.srcDirs
+        testResourceDirs += sourceSets.acceptance.resources.srcDirs
+        scopes.TEST.plus += [configurations.acceptanceCompile]
+    }
+}
+
+task acceptanceTest(type: Test) {
+    description = 'Runs the acceptance tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.acceptance.output.classesDirs
+    classpath = sourceSets.acceptance.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+task dockerAcceptanceTest(type: Test) {
+    description = 'Runs the acceptance tests with a dockerized browser.'
+    group = 'verification'
+    testClassesDirs = sourceSets.acceptance.output.classesDirs
+    classpath = sourceSets.acceptance.runtimeClasspath
+    outputs.upToDateWhen { false }
+    systemProperty 'spring.profiles.active', 'docker'
+}
+
+dependencies {
+    compile project(':spock-geb-quickstart')
+}
+
+test {
+    systemProperties "geb.build.reportsDir": "$reportsDir/geb"
+}
