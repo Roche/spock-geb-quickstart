@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 plugins {
-    id 'pl.allegro.tech.build.axion-release'
     id 'org.kordamp.gradle.java-project' version '0.39.0'
     id 'org.kordamp.gradle.bintray' version '0.39.0'
     id 'org.kordamp.gradle.integration-test' version '0.39.0'
