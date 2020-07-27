@@ -9,4 +9,4 @@ services:
 jobs:
   include:
     - stage: build
-      script: "./gradlew clean spock-geb-quickstart:build spock-geb-quickstart:dIT -i --stacktrace -Dspring.profiles.active=docker"
+      script: "./gradlew clean spock-geb-quickstart:build -i --stacktrace -Pprofile=docker"
