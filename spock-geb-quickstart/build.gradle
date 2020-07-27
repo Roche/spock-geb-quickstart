@@ -1,3 +1,20 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2019-2020 Hoffmann-La Roche.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 plugins {
     id 'pl.allegro.tech.build.axion-release'
     id 'org.kordamp.gradle.java-project' version '0.39.0'
@@ -8,7 +25,6 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'groovy'
-//apply plugin: 'maven-publish'
 
 group = 'com.roche.spock.geb'
 
@@ -37,6 +53,11 @@ config {
         }
 
         people {
+            person {
+                id = 'jerzykrlkroche'
+                name = 'Hoffmann-La Roche'
+                roles = ['developer']
+            }
             person {
                 id = 'jerzykrlkroche'
                 name = 'Jerzy Krolak'
@@ -88,16 +109,8 @@ version = scmVersion.version
 
 sourceCompatibility = 8
 
-task dockerFunctionalTest {}
-
-dockerFunctionalTest.finalizedBy functionalTest {
-    systemProperty 'spring.profiles.active', 'docker'
-}
-
-task sourceJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-    from sourceSets.main.allGroovy
+functionalTest {
+    systemProperty 'spring.profiles.active', rootProject.findProperty('profile') ?: 'default'
 }
 
 ext {
@@ -131,15 +144,6 @@ dependencies {
 test {
     systemProperties "geb.build.reportsDir": "$reportsDir/geb"
 }
-
-//publishing {
-//    publications {
-//        bootJava(MavenPublication) {
-//            from components.java
-//            artifact tasks.sourceJar
-//        }
-//    }
-//}
 
 task coveralls {
     // workaround for kordamp requiring coveralls
