@@ -1,16 +1,74 @@
 plugins {
     id 'pl.allegro.tech.build.axion-release'
+    id 'org.kordamp.gradle.java-project' version '0.39.0'
+    id 'org.kordamp.gradle.bintray' version '0.39.0'
+    id 'org.kordamp.gradle.integration-test' version '0.39.0'
+    id 'org.kordamp.gradle.functional-test' version '0.39.0'
 }
 
 apply plugin: 'java'
 apply plugin: 'groovy'
-apply plugin: 'maven-publish'
+//apply plugin: 'maven-publish'
 
 group = 'com.roche.spock.geb'
 
 repositories {
     mavenCentral()
     jcenter()
+}
+
+if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = '**undefined**'
+if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = '**undefined**'
+
+config {
+    release = (rootProject.findProperty('release') ? true : false)
+
+    info {
+        name = 'Spock Geb Quickstart'
+        description = 'This project simplifies executing Spock and Geb-based frontend tests.'
+        vendor = 'Hoffmann-La Roche'
+        inceptionYear = '2019'
+        tags = ['spock', 'geb', 'docker']
+
+        links {
+            website = 'https://github.com/Roche/spock-geb-quickstart'
+            issueTracker = 'https://github.com/Roche/spock-geb-quickstart/issues'
+            scm = 'https://github.com/Roche/spock-geb-quickstart.git'
+        }
+
+        people {
+            person {
+                id = 'jerzykrlkroche'
+                name = 'Jerzy Krolak'
+                roles = ['developer']
+            }
+        }
+
+    }
+
+    licensing {
+        licenses {
+            license {
+                id = 'Apache-2.0'
+                enabled = false
+            }
+        }
+    }
+
+    bintray {
+        userOrg = 'hoffmannlaroche'
+        name = 'spock-geb-quickstart'
+        repo = 'OpenSource'
+        publish = config.release
+        skipMavenSync = true
+        enabled = true
+        publications = ['main', 'sources']
+        credentials {
+            username = project.bintrayUsername
+            password = project.bintrayApiKey
+        }
+    }
+
 }
 
 scmVersion {
@@ -30,36 +88,9 @@ version = scmVersion.version
 
 sourceCompatibility = 8
 
-sourceSets {
-    integrationTest {
-        compileClasspath += sourceSets.main.output + configurations.testCompile + sourceSets.test.output
-        runtimeClasspath += output + compileClasspath + configurations.testRuntime + sourceSets.test.output
-    }
-}
+task dockerFunctionalTest {}
 
-idea {
-    module {
-        testSourceDirs += sourceSets.integrationTest.java.srcDirs
-        testSourceDirs += sourceSets.integrationTest.groovy.srcDirs
-        testResourceDirs += sourceSets.integrationTest.resources.srcDirs
-        scopes.TEST.plus += [configurations.integrationTestCompile]
-    }
-}
-
-task integrationTest(type: Test) {
-    description = 'Runs the integration tests.'
-    group = 'verification'
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    outputs.upToDateWhen { false }
-}
-
-task dockerIntegrationTest(type: Test) {
-    description = 'Runs the integration tests.'
-    group = 'verification'
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    outputs.upToDateWhen { false }
+dockerFunctionalTest.finalizedBy functionalTest {
     systemProperty 'spring.profiles.active', 'docker'
 }
 
@@ -79,7 +110,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
 
     compile 'com.aoe:geb-spock-reports:0.2.6'
-    compile ("com.athaydes:spock-reports:1.7.1") { transitive = false }
+    compile("com.athaydes:spock-reports:1.7.1") { transitive = false }
 
     compile "org.gebish:geb-spock:${gebVersion}"
 
@@ -101,11 +132,15 @@ test {
     systemProperties "geb.build.reportsDir": "$reportsDir/geb"
 }
 
-publishing {
-    publications {
-        bootJava(MavenPublication) {
-            from components.java
-            artifact tasks.sourceJar
-        }
-    }
+//publishing {
+//    publications {
+//        bootJava(MavenPublication) {
+//            from components.java
+//            artifact tasks.sourceJar
+//        }
+//    }
+//}
+
+task coveralls {
+    // workaround for kordamp requiring coveralls
 }

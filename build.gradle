@@ -38,3 +38,8 @@ allprojects {
 
     task allDeps(type: DependencyReportTask) {}
 }
+
+
+task aggregateJacocoReport {
+    // workaround for kordamp requiring aggregateJacocoReport here
+}
