@@ -15,8 +15,6 @@ scmVersion {
         prefix = 'spock-geb-quickstart'
     }
 
-    versionCreator 'versionWithBranch'
-
     branchVersionIncrementer = [
             'master': 'incrementMinor',
             '.*'    : 'incrementPatch'
