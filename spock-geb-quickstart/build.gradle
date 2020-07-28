@@ -82,7 +82,7 @@ config {
         publish = config.release
         skipMavenSync = true
         enabled = true
-        publications = ['main', 'sources']
+        publications = ['main', 'sources', 'javadoc']
         credentials {
             username = project.bintrayUsername
             password = project.bintrayApiKey
