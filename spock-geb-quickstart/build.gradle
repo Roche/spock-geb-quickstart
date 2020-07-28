@@ -17,10 +17,10 @@
  */
 plugins {
     id 'java-library'
-    id 'org.kordamp.gradle.java-project' version '0.38.0'
-    id 'org.kordamp.gradle.bintray' version '0.38.0'
-    id 'org.kordamp.gradle.integration-test' version '0.38.0'
-    id 'org.kordamp.gradle.functional-test' version '0.38.0'
+    id 'org.kordamp.gradle.java-project' version '0.36.0'
+    id 'org.kordamp.gradle.bintray' version '0.36.0'
+    id 'org.kordamp.gradle.integration-test' version '0.36.0'
+    id 'org.kordamp.gradle.functional-test' version '0.36.0'
 }
 
 apply plugin: 'java'
