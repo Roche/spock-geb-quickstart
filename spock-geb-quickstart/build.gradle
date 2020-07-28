@@ -17,10 +17,10 @@
  */
 plugins {
     id 'java-library'
-    id 'org.kordamp.gradle.java-project' version '0.36.0'
-    id 'org.kordamp.gradle.bintray' version '0.36.0'
-    id 'org.kordamp.gradle.integration-test' version '0.36.0'
-    id 'org.kordamp.gradle.functional-test' version '0.36.0'
+    id 'org.kordamp.gradle.java-project' version '0.39.0'
+    id 'org.kordamp.gradle.bintray' version '0.39.0'
+    id 'org.kordamp.gradle.integration-test' version '0.39.0'
+    id 'org.kordamp.gradle.functional-test' version '0.39.0'
 }
 
 apply plugin: 'java'
@@ -83,13 +83,12 @@ config {
         publish = config.release
         skipMavenSync = true
         enabled = true
-        publications = ['main']
+        publications = ['mavenJava']
         credentials {
             username = project.bintrayUsername
             password = project.bintrayApiKey
         }
     }
-
 }
 
 sourceCompatibility = 8
