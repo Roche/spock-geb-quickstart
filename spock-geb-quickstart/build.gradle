@@ -16,15 +16,14 @@
  * limitations under the License.
  */
 plugins {
-    id 'java-library'
-    id 'org.kordamp.gradle.java-project' version '0.39.0'
-    id 'org.kordamp.gradle.bintray' version '0.39.0'
-    id 'org.kordamp.gradle.integration-test' version '0.39.0'
-    id 'org.kordamp.gradle.functional-test' version '0.39.0'
+    id 'org.kordamp.gradle.integration-test' version '0.36.0'
+    id 'org.kordamp.gradle.functional-test' version '0.36.0'
+    id "com.jfrog.bintray" version "1.8.5"
 }
 
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 group = 'com.roche.spock.geb'
 
@@ -35,58 +34,115 @@ repositories {
 
 if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = '**undefined**'
 if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = '**undefined**'
+//
+//config {
+//    release = (rootProject.findProperty('release') ? true : false)
+//
+//    info {
+//        name = 'Spock Geb Quickstart'
+//        description = 'This project simplifies executing Spock and Geb-based frontend tests.'
+//        vendor = 'Hoffmann-La Roche'
+//        inceptionYear = '2019'
+//        tags = ['spock', 'geb', 'docker']
+//
+//        links {
+//            website = 'https://github.com/Roche/spock-geb-quickstart'
+//            issueTracker = 'https://github.com/Roche/spock-geb-quickstart/issues'
+//            scm = 'https://github.com/Roche/spock-geb-quickstart.git'
+//        }
+//
+//        people {
+//            person {
+//                id = 'jerzykrlkroche'
+//                name = 'Hoffmann-La Roche'
+//                roles = ['developer']
+//            }
+//            person {
+//                id = 'jerzykrlkroche'
+//                name = 'Jerzy Krolak'
+//                roles = ['developer']
+//            }
+//        }
+//
+//    }
+//
+//    licensing {
+//        licenses {
+//            license {
+//                id = 'Apache-2.0'
+//                enabled = false
+//            }
+//        }
+//    }
+//
+//    docs {
+//        javadoc {
+//            enabled = true
+//        }
+//
+////        groovydoc {
+////            enabled = true
+////            replaceJavadoc = true
+////        }
+//    }
+//
+//    coverage {
+//        coveralls {
+//            enabled = true
+//        }
+//    }
+//
+//    bintray {
+//        userOrg = 'hoffmannlaroche'
+//        name = 'spock-geb-quickstart'
+//        repo = 'OpenSource'
+//        publish = config.release
+//        skipMavenSync = true
+//        enabled = true
+//        credentials {
+//            username = project.bintrayUsername
+//            password = project.bintrayApiKey
+//        }
+//    }
+//}
+//
 
-config {
-    release = (rootProject.findProperty('release') ? true : false)
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
-    info {
-        name = 'Spock Geb Quickstart'
-        description = 'This project simplifies executing Spock and Geb-based frontend tests.'
-        vendor = 'Hoffmann-La Roche'
-        inceptionYear = '2019'
-        tags = ['spock', 'geb', 'docker']
-
-        links {
-            website = 'https://github.com/Roche/spock-geb-quickstart'
-            issueTracker = 'https://github.com/Roche/spock-geb-quickstart/issues'
-            scm = 'https://github.com/Roche/spock-geb-quickstart.git'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
         }
-
-        people {
-            person {
-                id = 'jerzykrlkroche'
-                name = 'Hoffmann-La Roche'
-                roles = ['developer']
-            }
-            person {
-                id = 'jerzykrlkroche'
-                name = 'Jerzy Krolak'
-                roles = ['developer']
-            }
-        }
-
     }
+}
 
-    licensing {
-        licenses {
-            license {
-                id = 'Apache-2.0'
-                enabled = false
-            }
-        }
-    }
-
-    bintray {
-        userOrg = 'hoffmannlaroche'
-        name = 'spock-geb-quickstart'
+bintray {
+    user = project.bintrayUsername
+    key = project.bintrayApiKey
+    publications = ['mavenJava']
+    dryRun = false
+    publish = true
+    pkg {
         repo = 'OpenSource'
-        publish = config.release
-        skipMavenSync = true
-        enabled = true
-        publications = ['main']
-        credentials {
-            username = project.bintrayUsername
-            password = project.bintrayApiKey
+        name = 'spock-geb-quickstart'
+        userOrg = 'hoffmannlaroche'
+        desc = 'This project simplifies executing Spock and Geb-based frontend tests.'
+        websiteUrl = 'https://github.com/Roche/spock-geb-quickstart'
+        issueTrackerUrl = 'https://github.com/Roche/spock-geb-quickstart/issues'
+        vcsUrl = 'https://github.com/Roche/spock-geb-quickstart.git'
+        licenses = ['Apache-2.0']
+        labels = ['spock', 'geb', 'docker']
+        publicDownloadNumbers = true
+        version {
+            name = project.version //Bintray logical version name
+            vcsTag = project.version
+            mavenCentralSync {
+                sync = false
+            }
         }
     }
 }
@@ -127,8 +183,4 @@ dependencies {
 
 test {
     systemProperties "geb.build.reportsDir": "$reportsDir/geb"
-}
-
-task coveralls {
-    // workaround for kordamp requiring coveralls
 }
