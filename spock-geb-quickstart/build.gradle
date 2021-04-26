@@ -18,7 +18,6 @@
 plugins {
     id 'org.kordamp.gradle.integration-test' version '0.36.0'
     id 'org.kordamp.gradle.functional-test' version '0.36.0'
-    id "com.jfrog.bintray" version "1.8.5"
     id 'signing'
 }
 
@@ -32,9 +31,6 @@ repositories {
     mavenCentral()
     jcenter()
 }
-
-if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = '**undefined**'
-if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = '**undefined**'
 
 java {
     withJavadocJar()
