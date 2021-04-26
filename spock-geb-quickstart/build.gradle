@@ -32,6 +32,9 @@ repositories {
     jcenter()
 }
 
+if (!project.hasProperty('ossrhUsername')) ext.ossrhUsername = '**undefined**'
+if (!project.hasProperty('ossrhPassword')) ext.ossrhPassword = '**undefined**'
+
 java {
     withJavadocJar()
     withSourcesJar()
