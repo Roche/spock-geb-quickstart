@@ -27,13 +27,9 @@ dependencyCheck {
 }
 
 allprojects {
-
     group = 'com.roche.spock.geb'
-
     version = scmVersion.version
-
     apply plugin: 'idea'
-
     task allDeps(type: DependencyReportTask) {}
 }
 
