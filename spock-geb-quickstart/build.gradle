@@ -19,6 +19,7 @@ plugins {
     id 'org.kordamp.gradle.integration-test' version '0.36.0'
     id 'org.kordamp.gradle.functional-test' version '0.36.0'
     id "com.jfrog.bintray" version "1.8.5"
+    id 'signing'
 }
 
 apply plugin: 'java'
@@ -68,33 +69,23 @@ publishing {
             }
         }
     }
-}
 
-bintray {
-    user = project.bintrayUsername
-    key = project.bintrayApiKey
-    publications = ['mavenJava']
-    dryRun = false
-    publish = true
-    pkg {
-        repo = 'OpenSource'
-        name = 'spock-geb-quickstart'
-        userOrg = 'hoffmannlaroche'
-        desc = 'This project simplifies executing Spock and Geb-based frontend tests.'
-        websiteUrl = 'https://github.com/Roche/spock-geb-quickstart'
-        issueTrackerUrl = 'https://github.com/Roche/spock-geb-quickstart/issues'
-        vcsUrl = 'https://github.com/Roche/spock-geb-quickstart.git'
-        licenses = ['Apache-2.0']
-        labels = ['spock', 'geb', 'docker']
-        publicDownloadNumbers = true
-        version {
-            name = project.version
-            vcsTag = project.version
-            mavenCentralSync {
-                sync = false
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username "${ossrhUsername}"
+                password "${ossrhPassword}"
             }
         }
     }
+
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 sourceCompatibility = 8
