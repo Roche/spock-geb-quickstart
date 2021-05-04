@@ -33,10 +33,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.time.Duration;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
@@ -54,7 +60,9 @@ public class BrowserConfiguration {
 
     @Bean
     public WebDriverManager webDriverManager() {
-        return WebDriverManager.chromedriver();
+        WebDriverManager webDriverManager = WebDriverManager.chromedriver();
+        webDriverManager.setup();
+        return webDriverManager;
     }
 
 
@@ -63,10 +71,11 @@ public class BrowserConfiguration {
     @Scope(SCOPE_PROTOTYPE)
     public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
                                         SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
-        webDriverManager.setup();
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserUpProxy(), InetAddress.getLoopbackAddress());
 
-        ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+
         if (spockGebQuickstartConfiguration.getBrowser() != null) {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
@@ -79,21 +88,40 @@ public class BrowserConfiguration {
     @Scope(SCOPE_PROTOTYPE)
     public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
                                                       SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
-        webDriverManager.setup();
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort()));
 
-        ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        InetSocketAddress proxyAddress = InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort());
+        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxyAddress);
+
+        ChromeOptions chromeOptions = new ChromeOptions();
+
+        chromeOptions.setProxy(seleniumProxy)
+                .setAcceptInsecureCerts(true)
+                .addArguments("--disable-dev-shm-usage");
+
         if (spockGebQuickstartConfiguration.getBrowser() != null) {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
 
         Testcontainers.exposeHostPorts(wrapper.getPort());
 
-        BrowserWebDriverContainer<?> browserWebDriverContainer = new BrowserWebDriverContainer<>()
+        BrowserWebDriverContainer<?> browserWebDriverContainer = new BrowserWebDriverContainer<>(spockGebQuickstartConfiguration.getBrowser().getDockerImageName())
                 .withCapabilities(chromeOptions)
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
+
+        browserWebDriverContainer.setWaitStrategy(getWaitStrategy());
         browserWebDriverContainer.start();
         return browserWebDriverContainer.getWebDriver();
+    }
+
+    private WaitStrategy getWaitStrategy() {
+        final WaitStrategy logWaitStrategy = new LogMessageWaitStrategy()
+                .withRegEx(".*(RemoteWebDriver instances should connect to|Selenium Server is up and running|Started Selenium Standalone).*\n")
+                .withStartupTimeout(Duration.of(15, SECONDS));
+
+        return new WaitAllStrategy()
+                .withStrategy(logWaitStrategy)
+                .withStrategy(new HostPortWaitStrategy())
+                .withStartupTimeout(Duration.of(15, SECONDS));
     }
 
     @Bean

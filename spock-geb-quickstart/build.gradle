@@ -30,7 +30,6 @@ group = 'com.roche.spock.geb'
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 if (!project.hasProperty('ossrhUsername')) ext.ossrhUsername = '**undefined**'
@@ -97,12 +96,12 @@ functionalTest {
 
 ext {
     gebVersion = "5.0"
-    seleniumVersion = "3.141.59"
+    seleniumVersion = "4.0.0-beta-3"
     springBootVersion = '2.5.5'
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:1.7.13'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
 
     implementation 'com.aoe:geb-spock-reports:0.3.0-RC1'
     implementation("com.athaydes:spock-reports:2.1-groovy-3.0") { transitive = false }
@@ -113,13 +112,12 @@ dependencies {
     api group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
 
     api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-
-    implementation("io.github.bonigarcia:webdrivermanager:4.0.0")
+    implementation("io.github.bonigarcia:webdrivermanager:4.4.1")
     implementation 'com.browserup:browserup-proxy-core:2.1.2'
     implementation 'com.browserup:browserup-proxy-mitm:2.1.2'
 
     implementation "org.testcontainers:selenium:1.15.3"
-    implementation "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+    implementation "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 
     implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
     implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
