@@ -52,7 +52,7 @@ public class BrowserConfiguration {
     @Scope(SCOPE_PROTOTYPE)
     public RemoteWebDriver chromeDriver(BrowerMobProxyWrapper wrapper) {
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserMobProxy(), InetAddress.getLoopbackAddress());
-        ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        ChromeOptions chromeOptions = (ChromeOptions) new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
         return new ChromeDriver(chromeOptions);
     }
 
@@ -63,7 +63,7 @@ public class BrowserConfiguration {
 
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort()));
 
-        ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        ChromeOptions chromeOptions = (ChromeOptions) new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
 
         Testcontainers.exposeHostPorts(wrapper.getPort());
 
