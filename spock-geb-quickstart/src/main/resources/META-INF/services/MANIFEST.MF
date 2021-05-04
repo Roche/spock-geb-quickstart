@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+
+Name: Build-Info
+Build-Revision: e82be7d358
+Build-Time: 2018-11-14T08:17:03
+Selenium-Version: 4.0.0-beta-3

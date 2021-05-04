@@ -33,6 +33,7 @@ public class SpockGebQuickstartConfiguration {
         this.browser = browser;
     }
 
+
     public String getBaseUrl() {
         return baseUrl;
     }
