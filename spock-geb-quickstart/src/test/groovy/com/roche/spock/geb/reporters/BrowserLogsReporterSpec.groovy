@@ -66,7 +66,7 @@ class BrowserLogsReporterSpec extends Specification {
         def logEntry = Files.readString(Path.of(reportDir.toString(), 'my-label.txt'))
 
         then:
-        logEntry.replaceFirst('([^]]+]\\s)', '') == '[INFO] my message\n'
+        logEntry.replaceFirst('([^]]+]\\s)', '').replace('\r\n', '\n') == '[INFO] my message\n'
     }
 
     def getBrowserWithLogs(entries) {

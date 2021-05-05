@@ -24,11 +24,21 @@ public class SpockGebQuickstartConfiguration {
 
     private String baseUrl;
 
+    private String dockerImageName = "selenium/standalone-chrome:4.0.0-beta-3-20210426";
+
     public String getBaseUrl() {
         return baseUrl;
     }
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getDockerImageName() {
+        return dockerImageName;
+    }
+
+    public void setDockerImageName(String dockerImageName) {
+        this.dockerImageName = dockerImageName;
     }
 }
