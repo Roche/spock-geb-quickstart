@@ -69,16 +69,18 @@ public class BrowserConfiguration {
     @Bean
     @Profile("docker")
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver testContainersChromeDriver(BrowerMobProxyWrapper wrapper) {
+    public RemoteWebDriver testContainersChromeDriver(BrowerMobProxyWrapper wrapper, SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
 
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort()));
 
-        ChromeOptions chromeOptions = (ChromeOptions) new ChromeOptions().setProxy(seleniumProxy).
-                setAcceptInsecureCerts(true).addArguments("--disable-dev-shm-usage");
+        ChromeOptions chromeOptions = (ChromeOptions) new ChromeOptions()
+                .setProxy(seleniumProxy)
+                .setAcceptInsecureCerts(true)
+                .addArguments("--disable-dev-shm-usage");
 
         Testcontainers.exposeHostPorts(wrapper.getPort());
 
-        BrowserWebDriverContainer browserWebDriverContainer = new BrowserWebDriverContainer("selenium/standalone-chrome:4.0.0-beta-3-20210426")
+        BrowserWebDriverContainer<?> browserWebDriverContainer = new BrowserWebDriverContainer<>(spockGebQuickstartConfiguration.getDockerImageName())
                 .withCapabilities(chromeOptions)
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
         browserWebDriverContainer.setWaitStrategy(getWaitStrategy());
