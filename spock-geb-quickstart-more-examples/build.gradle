@@ -30,6 +30,7 @@ task acceptanceTest(type: Test) {
     testClassesDirs = sourceSets.acceptance.output.classesDirs
     classpath = sourceSets.acceptance.runtimeClasspath
     outputs.upToDateWhen { false }
+    useJUnitPlatform()
 }
 
 task dockerAcceptanceTest(type: Test) {
@@ -39,6 +40,7 @@ task dockerAcceptanceTest(type: Test) {
     classpath = sourceSets.acceptance.runtimeClasspath
     outputs.upToDateWhen { false }
     systemProperty 'spring.profiles.active', 'docker'
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -47,4 +49,5 @@ dependencies {
 
 test {
     systemProperties "geb.build.reportsDir": "$reportsDir/geb"
+    useJUnitPlatform()
 }

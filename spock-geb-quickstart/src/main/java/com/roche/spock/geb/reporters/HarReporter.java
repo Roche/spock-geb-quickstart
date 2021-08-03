@@ -17,9 +17,9 @@
  */
 package com.roche.spock.geb.reporters;
 
+import com.browserup.harreader.model.Har;
 import com.roche.spock.geb.config.BrowserConfiguration;
 import geb.report.ReportState;
-import net.lightbody.bmp.core.har.Har;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class HarReporter extends WrappedReporterSupport {
     @Override
     public void writeReport(ReportState reportState) {
         File file = (File) getFile(reportState.getOutputDir(), reportState.getLabel(), "har");
-        Har har = BrowserConfiguration.getBrowerMobProxyWrapper().getBrowserMobProxy().getHar();
+        Har har = BrowserConfiguration.getBrowerUpProxyWrapper().getBrowserUpProxy().getHar();
         try {
             har.writeTo(file);
         } catch (IOException e) {

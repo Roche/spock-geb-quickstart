@@ -17,11 +17,11 @@
  */
 package com.roche.spock.geb.reporters
 
+import com.browserup.bup.BrowserUpProxy
+import com.browserup.harreader.model.Har
 import com.roche.spock.geb.config.BrowserConfiguration
-import com.roche.spock.geb.har.BrowerMobProxyWrapper
+import com.roche.spock.geb.har.BrowerUpProxyWrapper
 import geb.report.ReportState
-import net.lightbody.bmp.BrowserMobProxy
-import net.lightbody.bmp.core.har.Har
 import org.springframework.context.ApplicationContext
 import spock.lang.Specification
 
@@ -31,8 +31,8 @@ class HarReporterSpec extends Specification {
 
     HarReporter harReporter = new HarReporter()
     ApplicationContext applicationContext = Mock()
-    BrowerMobProxyWrapper browerMobProxyWrapper = Mock()
-    BrowserMobProxy browserMobProxy = Mock()
+    BrowerUpProxyWrapper browerMobProxyWrapper = Mock()
+    BrowserUpProxy browserUpProxy = Mock()
     Har har = Mock()
 
 
@@ -52,9 +52,9 @@ class HarReporterSpec extends Specification {
 
     def prepareHar() {
         new BrowserConfiguration().injectContext(applicationContext)
-        applicationContext.getBean(BrowerMobProxyWrapper) >> browerMobProxyWrapper
-        browerMobProxyWrapper.getBrowserMobProxy() >> browserMobProxy
-        browserMobProxy.getHar() >> har
+        applicationContext.getBean(BrowerUpProxyWrapper) >> browerMobProxyWrapper
+        browerMobProxyWrapper.getBrowserUpProxy() >> browserUpProxy
+        browserUpProxy.getHar() >> har
         return har
     }
 }
