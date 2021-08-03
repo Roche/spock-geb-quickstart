@@ -90,11 +90,12 @@ signing {
 sourceCompatibility = 8
 
 functionalTest {
+    useJUnitPlatform()
     systemProperty 'spring.profiles.active', rootProject.findProperty('profile') ?: 'default'
 }
 
 ext {
-    gebVersion = "3.4"
+    gebVersion = "4.1"
     seleniumVersion = "3.141.59"
     springBootVersion = '2.3.0.RELEASE'
 }
@@ -102,13 +103,13 @@ ext {
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
 
-    compile 'com.aoe:geb-spock-reports:0.2.6'
-    compile("com.athaydes:spock-reports:1.7.1") { transitive = false }
+    compile 'com.aoe:geb-spock-reports:0.3.0-RC1'
+    compile("com.athaydes:spock-reports:2.0-groovy-3.0") { transitive = false }
 
     compile "org.gebish:geb-spock:${gebVersion}"
 
-    compile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
-    compile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
+    compile group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
+    compile group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
 
     compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     compile("io.github.bonigarcia:webdrivermanager:4.0.0")
@@ -122,5 +123,6 @@ dependencies {
 }
 
 test {
+    useJUnitPlatform()
     systemProperties "geb.build.reportsDir": "$reportsDir/geb"
 }
