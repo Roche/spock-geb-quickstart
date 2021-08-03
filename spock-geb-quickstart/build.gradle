@@ -22,6 +22,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
@@ -101,25 +102,26 @@ ext {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.13'
+    implementation 'org.slf4j:slf4j-api:1.7.13'
 
-    compile 'com.aoe:geb-spock-reports:0.3.0-RC1'
-    compile("com.athaydes:spock-reports:2.0-groovy-3.0") { transitive = false }
+    implementation 'com.aoe:geb-spock-reports:0.3.0-RC1'
+    implementation("com.athaydes:spock-reports:2.0-groovy-3.0") { transitive = false }
 
-    compile "org.gebish:geb-spock:${gebVersion}"
+    api "org.gebish:geb-spock:${gebVersion}"
 
-    compile group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
-    compile group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
+    api group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
+    api group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
 
-    compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-    compile("io.github.bonigarcia:webdrivermanager:4.0.0")
-    compile 'net.lightbody.bmp:browsermob-core:2.1.5'
+    implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    implementation("io.github.bonigarcia:webdrivermanager:4.0.0")
+    implementation 'com.browserup:browserup-proxy-core:2.1.2'
+    implementation 'com.browserup:browserup-proxy-mitm:2.1.2'
 
-    compile "org.testcontainers:selenium:1.15.3"
-    compile "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+    implementation "org.testcontainers:selenium:1.15.3"
+    implementation "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
 
-    compile "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
-    compile "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
 }
 
 test {

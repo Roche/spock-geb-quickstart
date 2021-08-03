@@ -31,7 +31,7 @@ import org.springframework.test.context.TestExecutionListener;
 public class MobProxyListener implements TestExecutionListener {
 
     @Autowired
-    BrowerMobProxyWrapper browerMobProxyWrapper;
+    BrowerUpProxyWrapper browerUpProxyWrapper;
 
     private Logger logger = LoggerFactory.getLogger(MobProxyListener.class);
 

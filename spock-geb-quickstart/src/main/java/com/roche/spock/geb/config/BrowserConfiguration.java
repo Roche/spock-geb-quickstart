@@ -17,15 +17,19 @@
  */
 package com.roche.spock.geb.config;
 
-import com.roche.spock.geb.har.BrowerMobProxyWrapper;
-import net.lightbody.bmp.client.ClientUtil;
+import com.browserup.bup.client.ClientUtil;
+import com.roche.spock.geb.har.BrowerUpProxyWrapper;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
@@ -50,8 +54,8 @@ public class BrowserConfiguration {
     @Bean
     @Profile("default")
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver chromeDriver(BrowerMobProxyWrapper wrapper) {
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserMobProxy(), InetAddress.getLoopbackAddress());
+    public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper) {
+        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserUpProxy(), InetAddress.getLoopbackAddress());
         ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
         return new ChromeDriver(chromeOptions);
     }
@@ -59,7 +63,7 @@ public class BrowserConfiguration {
     @Bean
     @Profile("docker")
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver testContainersChromeDriver(BrowerMobProxyWrapper wrapper) {
+    public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper) {
 
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort()));
 
@@ -75,16 +79,16 @@ public class BrowserConfiguration {
     }
 
     @Bean
-    public BrowerMobProxyWrapper browerMobProxyWrapper() {
-        return new BrowerMobProxyWrapper();
+    public BrowerUpProxyWrapper browerMobProxyWrapper() {
+        return new BrowerUpProxyWrapper();
     }
 
     public static RemoteWebDriver getChromeDriver() {
         return applicationContext.getBean(RemoteWebDriver.class);
     }
 
-    public static BrowerMobProxyWrapper getBrowerMobProxyWrapper() {
-        return applicationContext.getBean(BrowerMobProxyWrapper.class);
+    public static BrowerUpProxyWrapper getBrowerUpProxyWrapper() {
+        return applicationContext.getBean(BrowerUpProxyWrapper.class);
     }
 
 }
