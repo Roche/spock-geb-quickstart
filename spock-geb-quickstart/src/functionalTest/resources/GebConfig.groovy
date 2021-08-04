@@ -28,6 +28,7 @@ reporter = new CompositeReporter(new HarReporter(), new BrowserLogsReporter(), n
 
 reportingListener = new GebReportingListener()
 reportsDir = 'build/geb-spock-reports'
+reportOnTestFailureOnly = false
 
 // defaults
 WebDriverManager.chromedriver().setup()
