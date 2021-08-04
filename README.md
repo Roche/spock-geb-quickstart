@@ -1,6 +1,6 @@
 # Spock Geb Quickstart
 
-<nobr>[![Build Status](https://travis-ci.org/Roche/spock-geb-quickstart.svg?branch=master)](https://travis-ci.org/Roche/spock-geb-quickstart)
+<nobr>[![Build Status](https://travis-ci.com/Roche/spock-geb-quickstart.svg?branch=master)](https://travis-ci.com/Roche/spock-geb-quickstart)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)</nobr>
 
 This project simplifies executing Spock and Geb-based frontend tests. 
