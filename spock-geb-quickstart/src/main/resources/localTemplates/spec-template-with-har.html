@@ -1,39 +1,42 @@
 <!--
+Copyright 2017-2019 Tilman Ginzel, AOE GmbH
 
-    SPDX-License-Identifier: Apache-2.0
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    Copyright 2017-2019 Tilman Ginzel, AOE GmbH,
-    Copyright 2019-2020 Hoffmann-La Roche.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 -->
+
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="stylesheet" href="spec.css" />
-</head>
-<body id="top">
 
 <%
 def stats = utils.stats( data )
 
+def config = com.aoe.gebspockreports.GebReportConfigLoader.instance.config
 def gebUtils = new com.aoe.gebspockreports.GebReportUtils()
 def gebReport = gebUtils.readGebReport()
 def specReport = gebReport.findSpecByLabel(utils.getSpecClassName(data))
+%>
 
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="spec.css" />
+    <% if (config.customCssFile != null) { %>
+    <link rel="stylesheet" href="custom.css" />
+    <% } %>
+</head>
+<body id="top">
+
+<%
 def writeIssuesOrSees = { issues, description ->
 if ( issues?.value() ) { %>
 <div class="issues">
@@ -53,24 +56,24 @@ if ( issues?.value() ) { %>
 }
 
 def writeStackTrace = { error, index, featureName ->
-    def uniqueId = "${featureName.hashCode()}-${index}" %>
-    <pre>$error</pre>
-    <input type="checkbox" id="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-checkbox" checked />
-    <label for="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-label" >Stacktrace</label>
-    <div>
-        <pre class="stacktrace"><% gebUtils.writeStacktrace(error, out) %></pre>
-    </div>
+def uniqueId = "${featureName.hashCode()}-${index}" %>
+<pre>$error</pre>
+<input type="checkbox" id="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-checkbox" checked />
+<label for="toggle-stacktrace-checkbox-$uniqueId" class="toggle-stacktrace-label" >Stacktrace</label>
+<div>
+    <pre class="stacktrace"><% gebUtils.writeStacktrace(error, out) %></pre>
+</div>
 <% }
 
 def writeReportInfo = { reportInfo ->
-    if (reportInfo) { %>
-        <h3>Report Info:</h3>
-        <ul>
-        <% reportInfo.each { info -> %>
-            <li>$info</li>
-        <% } %>
-        </ul> <%
-    }
+if (reportInfo) { %>
+<h3>Report Info:</h3>
+<ul>
+    <% reportInfo.each { info -> %>
+    <li>$info</li>
+    <% } %>
+</ul> <%
+}
 }
 
 %>
@@ -165,7 +168,7 @@ def gebArtifacts = gebFeatureReport?.artifacts
         <span class="feature-name feature-name-$cssClass">$name</span>
 
         <%
-        def ignoreReason = description.getAnnotation(spock.lang.Ignore)?.value()
+        def ignoreReason = utils.featureAnnotation(delegate, spock.lang.Ignore)?.value()
         if (ignoreReason) { %>
         <p class="ignore-reason">$ignoreReason</p>
         <% } %>
@@ -174,20 +177,20 @@ def gebArtifacts = gebFeatureReport?.artifacts
     <!-- print feature report info -->
     <%
     if (!isIgnored) {
-        if (utils.isUnrolled(delegate)) {
-            writeReportInfo(utils.nextSpecExtraInfo(data))
-        } else {
-            (1..iterations.size()).each {
-                writeReportInfo(utils.nextSpecExtraInfo(data))
-            }
-        }
+    if (utils.isUnrolled(delegate)) {
+    writeReportInfo(utils.nextSpecExtraInfo(data))
+    } else {
+    (1..iterations.size()).each {
+    writeReportInfo(utils.nextSpecExtraInfo(data))
+    }
+    }
     }
     %>
 
     <!-- print name and issue/see annotation-->
     <%
-    writeIssuesOrSees(description.getAnnotation(spock.lang.Issue), 'Issues')
-    writeIssuesOrSees(description.getAnnotation(spock.lang.See), 'See')
+    writeIssuesOrSees(utils.featureAnnotation(delegate, spock.lang.Issue), 'Issues')
+    writeIssuesOrSees(utils.featureAnnotation(delegate, spock.lang.See), 'See')
     %>
 
     <!-- print given, when, then, ... blocks -->
@@ -221,10 +224,10 @@ def gebArtifacts = gebFeatureReport?.artifacts
     <h3>Data Table ($passedCount/${iterations.size()} passed):</h3>
     <table>
         <thead>
-            <tr>
-                <% params.forEach { param -> %> <th>$param</th> <% }%>
-                <th>Result</th>
-            </tr>
+        <tr>
+            <% params.forEach { param -> %> <th>$param</th> <% }%>
+            <th>Result</th>
+        </tr>
         </thead>
         <tbody>
         <% failedIterations.forEach { iteration -> %>
