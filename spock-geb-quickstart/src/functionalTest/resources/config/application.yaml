@@ -16,4 +16,5 @@
 # limitations under the License.
 #
 
-com.roche.spock.geb.base-url: http://gebish.org
+com.roche.spock.geb:
+  base-url: http://gebish.org
