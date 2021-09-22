@@ -19,6 +19,7 @@ package com.roche.spock.geb.config;
 
 import com.browserup.bup.client.ClientUtil;
 import com.roche.spock.geb.har.BrowerUpProxyWrapper;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -52,26 +53,43 @@ public class BrowserConfiguration {
     }
 
     @Bean
+    public WebDriverManager webDriverManager() {
+        return WebDriverManager.chromedriver();
+    }
+
+
+    @Bean
     @Profile("default")
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper) {
+    public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+                                        SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+        webDriverManager.setup();
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserUpProxy(), InetAddress.getLoopbackAddress());
+
         ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        if (spockGebQuickstartConfiguration.getBrowser() != null) {
+            chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
+        }
+
         return new ChromeDriver(chromeOptions);
     }
 
     @Bean
     @Profile("docker")
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper) {
-
+    public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+                                                      SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+        webDriverManager.setup();
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort()));
 
         ChromeOptions chromeOptions = new ChromeOptions().setProxy(seleniumProxy).setAcceptInsecureCerts(true);
+        if (spockGebQuickstartConfiguration.getBrowser() != null) {
+            chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
+        }
 
         Testcontainers.exposeHostPorts(wrapper.getPort());
 
-        BrowserWebDriverContainer browserWebDriverContainer = new BrowserWebDriverContainer()
+        BrowserWebDriverContainer<?> browserWebDriverContainer = new BrowserWebDriverContainer<>()
                 .withCapabilities(chromeOptions)
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
         browserWebDriverContainer.start();

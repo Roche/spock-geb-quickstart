@@ -96,7 +96,7 @@ functionalTest {
 }
 
 ext {
-    gebVersion = "4.1"
+    gebVersion = "5.0"
     seleniumVersion = "3.141.59"
     springBootVersion = '2.3.0.RELEASE'
 }
@@ -105,7 +105,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.13'
 
     implementation 'com.aoe:geb-spock-reports:0.3.0-RC1'
-    implementation("com.athaydes:spock-reports:2.0-groovy-3.0") { transitive = false }
+    implementation("com.athaydes:spock-reports:2.1-groovy-3.0") { transitive = false }
 
     api "org.gebish:geb-spock:${gebVersion}"
 
