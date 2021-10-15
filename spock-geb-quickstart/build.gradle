@@ -98,7 +98,7 @@ functionalTest {
 ext {
     gebVersion = "5.0"
     seleniumVersion = "3.141.59"
-    springBootVersion = '2.3.0.RELEASE'
+    springBootVersion = '2.5.5'
 }
 
 dependencies {
@@ -112,7 +112,8 @@ dependencies {
     api group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
     api group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
 
-    implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
     implementation("io.github.bonigarcia:webdrivermanager:4.0.0")
     implementation 'com.browserup:browserup-proxy-core:2.1.2'
     implementation 'com.browserup:browserup-proxy-mitm:2.1.2'
