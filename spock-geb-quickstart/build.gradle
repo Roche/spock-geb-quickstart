@@ -95,9 +95,10 @@ functionalTest {
 }
 
 ext {
-    gebVersion = "5.0"
-    seleniumVersion = "4.0.0-beta-3"
+    gebVersion = "5.1"
+    seleniumVersion = "4.0.0"
     springBootVersion = '2.5.5'
+    nettyVersion = '4.1.68.Final'
 }
 
 dependencies {
@@ -113,14 +114,18 @@ dependencies {
 
     api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     implementation("io.github.bonigarcia:webdrivermanager:4.4.1")
-    implementation 'com.browserup:browserup-proxy-core:2.1.2'
-    implementation 'com.browserup:browserup-proxy-mitm:2.1.2'
+    implementation('com.browserup:browserup-proxy-core:2.1.2')
+    implementation('com.browserup:browserup-proxy-mitm:2.1.2')
 
     implementation "org.testcontainers:selenium:1.15.3"
-    implementation "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 
-    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
-    implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+    api "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
+
+    api "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    api "org.seleniumhq.selenium:selenium-api:${seleniumVersion}"
+    api "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+
+    implementation "io.netty:netty-all:${nettyVersion}"
 }
 
 test {
