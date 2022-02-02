@@ -110,9 +110,10 @@ public class BrowserConfiguration {
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
 
         browserWebDriverContainer.setWaitStrategy(getWaitStrategy());
-        browserWebDriverContainer.setFileDetector(new LocalFileDetector());
         browserWebDriverContainer.start();
-        return browserWebDriverContainer.getWebDriver();
+        RemoteWebDriver remoteWebDriver = browserWebDriverContainer.getWebDriver();
+        remoteWebDriver.setFileDetector(new LocalFileDetector());
+        return remoteWebDriver;
     }
 
     private WaitStrategy getWaitStrategy() {
