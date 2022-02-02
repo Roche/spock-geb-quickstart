@@ -23,6 +23,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -109,6 +110,7 @@ public class BrowserConfiguration {
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
 
         browserWebDriverContainer.setWaitStrategy(getWaitStrategy());
+        browserWebDriverContainer.setFileDetector(new LocalFileDetector());
         browserWebDriverContainer.start();
         return browserWebDriverContainer.getWebDriver();
     }
