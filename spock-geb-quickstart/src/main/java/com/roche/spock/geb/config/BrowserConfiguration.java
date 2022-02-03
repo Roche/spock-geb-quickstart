@@ -20,6 +20,7 @@ package com.roche.spock.geb.config;
 import com.browserup.bup.client.ClientUtil;
 import com.roche.spock.geb.har.BrowerUpProxyWrapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -105,7 +106,7 @@ public class BrowserConfiguration {
 
         Testcontainers.exposeHostPorts(wrapper.getPort());
 
-        BrowserWebDriverContainer<?> browserWebDriverContainer = new BrowserWebDriverContainer<>(spockGebQuickstartConfiguration.getBrowser().getDockerImageName())
+        BrowserWebDriverContainer<?> browserWebDriverContainer = getBrowserWebDriverContainer(spockGebQuickstartConfiguration)
                 .withCapabilities(chromeOptions)
                 .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
 
@@ -114,6 +115,14 @@ public class BrowserConfiguration {
         RemoteWebDriver remoteWebDriver = browserWebDriverContainer.getWebDriver();
         remoteWebDriver.setFileDetector(new LocalFileDetector());
         return remoteWebDriver;
+    }
+
+    @NotNull
+    private BrowserWebDriverContainer<?> getBrowserWebDriverContainer(SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+        if (spockGebQuickstartConfiguration.getBrowser() == null) {
+            return new BrowserWebDriverContainer<>();
+        }
+        return new BrowserWebDriverContainer<>(spockGebQuickstartConfiguration.getBrowser().getDockerImageName());
     }
 
     private WaitStrategy getWaitStrategy() {
