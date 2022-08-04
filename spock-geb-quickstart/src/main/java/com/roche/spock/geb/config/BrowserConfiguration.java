@@ -69,7 +69,7 @@ public class BrowserConfiguration {
 
 
     @Bean
-    @Profile("default")
+    @Profile("!docker")
     @Scope(SCOPE_PROTOTYPE)
     public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
                                         SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
