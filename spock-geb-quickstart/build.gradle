@@ -96,7 +96,7 @@ functionalTest {
 
 ext {
     gebVersion = "5.1"
-    seleniumVersion = "4.0.0"
+    seleniumVersion = "4.8.1"
     springBootVersion = '2.5.5'
     nettyVersion = '4.1.68.Final'
 }
