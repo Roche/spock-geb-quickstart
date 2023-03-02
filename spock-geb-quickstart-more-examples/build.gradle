@@ -5,12 +5,16 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 11
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 sourceSets {
     acceptance {
-        compileClasspath += sourceSets.main.output + configurations.testCompile + sourceSets.test.output
-        runtimeClasspath += output + compileClasspath + configurations.testRuntime + sourceSets.test.output
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath + configurations.testCompileClasspath + sourceSets.test.output
+        runtimeClasspath += output + compileClasspath + configurations.testRuntimeClasspath + sourceSets.test.output
     }
 }
 
@@ -19,7 +23,7 @@ idea {
         testSourceDirs += sourceSets.acceptance.java.srcDirs
         testSourceDirs += sourceSets.acceptance.groovy.srcDirs
         testResourceDirs += sourceSets.acceptance.resources.srcDirs
-        scopes.TEST.plus += [configurations.acceptanceCompile]
+        scopes.TEST.plus += [configurations.acceptanceRuntimeClasspath, configurations.acceptanceCompileClasspath]
     }
 }
 
@@ -43,7 +47,7 @@ task dockerAcceptanceTest(type: Test) {
 }
 
 dependencies {
-    compile project(':spock-geb-quickstart')
+    implementation project(':spock-geb-quickstart')
 }
 
 test {

@@ -176,12 +176,13 @@ def gebArtifacts = gebFeatureReport?.artifacts
 
     <!-- print feature report info -->
     <%
+    def feature = delegate
     if (!isIgnored) {
     if (utils.isUnrolled(delegate)) {
-    writeReportInfo(utils.nextSpecExtraInfo(data))
+    writeReportInfo(utils.nextSpecExtraInfo(data, feature))
     } else {
     (1..iterations.size()).each {
-    writeReportInfo(utils.nextSpecExtraInfo(data))
+    writeReportInfo(utils.nextSpecExtraInfo(data, feature))
     }
     }
     }

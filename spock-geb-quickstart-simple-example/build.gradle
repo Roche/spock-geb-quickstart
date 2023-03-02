@@ -5,7 +5,11 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 11
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 task dockerTest(type: Test) {
     description = 'Runs the tests with a dockerized browser.'
@@ -17,7 +21,7 @@ task dockerTest(type: Test) {
 }
 
 dependencies {
-    compile project(':spock-geb-quickstart')
+    implementation project(':spock-geb-quickstart')
 }
 
 test {
