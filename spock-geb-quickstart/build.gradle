@@ -38,6 +38,9 @@ if (!project.hasProperty('ossrhPassword')) ext.ossrhPassword = '**undefined**'
 java {
     withJavadocJar()
     withSourcesJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 publishing {
@@ -87,37 +90,41 @@ signing {
     sign publishing.publications.mavenJava
 }
 
-sourceCompatibility = 8
-
 functionalTest {
     useJUnitPlatform()
     systemProperty 'spring.profiles.active', rootProject.findProperty('profile') ?: 'default'
 }
 
 ext {
-    gebVersion = "5.1"
-    seleniumVersion = "4.0.0"
-    springBootVersion = '2.5.5'
-    nettyVersion = '4.1.68.Final'
+    gebVersion = "7.0"
+    seleniumVersion = "4.8.1"
+    springBootVersion = '3.0.3'
+    nettyVersion = '4.1.89.Final'
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
 
-    implementation 'com.aoe:geb-spock-reports:0.3.0-RC1'
-    implementation("com.athaydes:spock-reports:2.1-groovy-3.0") { transitive = false }
+    implementation('com.aoe:geb-spock-reports:0.3.0-RC1') {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
 
-    api "org.gebish:geb-spock:${gebVersion}"
+    implementation "com.athaydes:spock-reports:2.4.0-groovy-4.0"
 
-    api group: 'org.spockframework', name: 'spock-core', version: '2.0-groovy-3.0'
-    api group: 'org.spockframework', name: 'spock-spring', version: '2.0-groovy-3.0'
+    api "org.gebish:geb-spock:7.0"
 
-    api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-    implementation("io.github.bonigarcia:webdrivermanager:4.4.1")
+    api group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
+    api group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
+
+//    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.3'
+
+    api("org.springframework.boot:spring-boot-starter-test:3.0.3")
+    implementation("io.github.bonigarcia:webdrivermanager:5.3.2")
     implementation('com.browserup:browserup-proxy-core:2.1.2')
     implementation('com.browserup:browserup-proxy-mitm:2.1.2')
 
-    implementation "org.testcontainers:selenium:1.15.3"
+    implementation "org.testcontainers:selenium:1.17.6"
 
     api "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 

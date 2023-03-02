@@ -18,9 +18,8 @@
 package com.roche.spock.geb.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
-@ConstructorBinding
 @ConfigurationProperties("com.roche.spock.geb")
 public class SpockGebQuickstartConfiguration {
 
@@ -28,6 +27,7 @@ public class SpockGebQuickstartConfiguration {
 
     private final SpockGebQuickstartBrowserConfiguration browser;
 
+    @ConstructorBinding
     public SpockGebQuickstartConfiguration(String baseUrl, SpockGebQuickstartBrowserConfiguration browser) {
         this.baseUrl = baseUrl;
         this.browser = browser;
