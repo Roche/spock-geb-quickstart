@@ -24,7 +24,7 @@ gradlew :spock-geb-quickstart-more-examples:acceptanceTests
 Run tests with a dockerized browser:
 
 ```
-gradlew :spock-geb-quickstart-simple-example:dockerTest
+SPRING_PROFILES_ACTIVE=docker gradlew :spock-geb-quickstart-simple-example:test
 ```
 
 Check the test results:

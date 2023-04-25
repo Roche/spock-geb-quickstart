@@ -27,10 +27,14 @@ public class SpockGebQuickstartConfiguration {
 
     private final SpockGebQuickstartBrowserConfiguration browser;
 
+    private final BrowserType browserType;
+
     @ConstructorBinding
-    public SpockGebQuickstartConfiguration(String baseUrl, SpockGebQuickstartBrowserConfiguration browser) {
+    public SpockGebQuickstartConfiguration(String baseUrl, SpockGebQuickstartBrowserConfiguration browser,
+                                           BrowserType browserType) {
         this.baseUrl = baseUrl;
         this.browser = browser;
+        this.browserType = browserType == null ? BrowserType.local : browserType;
     }
 
 
@@ -42,4 +46,7 @@ public class SpockGebQuickstartConfiguration {
         return browser;
     }
 
+    public BrowserType getBrowserType() {
+        return browserType;
+    }
 }
