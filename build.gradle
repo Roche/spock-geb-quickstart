@@ -58,6 +58,10 @@ config {
             enabled = false
         }
     }
+
+    publishing {
+        enabled = false
+    }
 }
 
 apply plugin: 'org.owasp.dependencycheck'
