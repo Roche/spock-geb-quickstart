@@ -12,7 +12,7 @@ apply plugin: 'org.owasp.dependencycheck'
 
 scmVersion {
     tag {
-        prefix = 'spock-geb-quickstart'
+        prefix = 'spock-geb-quickstart-'
     }
 
     branchVersionIncrementer = [
