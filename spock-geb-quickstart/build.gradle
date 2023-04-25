@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Copyright 2019-2020 Hoffmann-La Roche.
+ * Copyright 2023 F. Hoffmann-La Roche Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 plugins {
-    id 'org.kordamp.gradle.integration-test' version '0.51.0'
-    id 'org.kordamp.gradle.functional-test' version '0.36.0'
+    id 'org.kordamp.gradle.integration-test'
+    id 'org.kordamp.gradle.functional-test'
     id 'signing'
 }
 
@@ -36,8 +36,6 @@ if (!project.hasProperty('ossrhUsername')) ext.ossrhUsername = '**undefined**'
 if (!project.hasProperty('ossrhPassword')) ext.ossrhPassword = '**undefined**'
 
 java {
-    withJavadocJar()
-    withSourcesJar()
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }

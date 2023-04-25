@@ -1,3 +1,20 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2023 F. Hoffmann-La Roche Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 buildscript {
     dependencies {
         classpath 'org.owasp:dependency-check-gradle:8.1.2'
@@ -6,6 +23,41 @@ buildscript {
 
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.15.0'
+    id 'org.kordamp.gradle.java-project' version '0.51.0'
+}
+
+config {
+    release = false
+
+    info {
+        name        = 'spock-geb-quickstart'
+        vendor      = 'Roche'
+        description = 'This project simplifies executing Spock and Geb-based frontend tests.'
+
+        links {
+            website      = 'https://github.com/Roche/spock-geb-quickstart'
+            issueTracker = 'https://github.com/Roche/spock-geb-quickstart/issues'
+            scm          = 'https://github.com/Roche/spock-geb-quickstart.git'
+        }
+
+        people {
+            person {
+                id    = 'jerzykrlkroche'
+                name  = 'F. Hoffmann-La Roche Ltd'
+                roles = ['developer']
+            }
+        }
+    }
+
+    licensing {
+        enabled = false
+    }
+
+    docs {
+        javadoc {
+            enabled = false
+        }
+    }
 }
 
 apply plugin: 'org.owasp.dependencycheck'
@@ -33,6 +85,3 @@ allprojects {
     task allDeps(type: DependencyReportTask) {}
 }
 
-task aggregateJacocoReport {
-    // workaround for kordamp requiring aggregateJacocoReport here
-}
