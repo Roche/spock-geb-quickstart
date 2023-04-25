@@ -31,7 +31,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
@@ -67,10 +66,17 @@ public class BrowserConfiguration {
         return webDriverManager;
     }
 
-
     @Bean
-    @Profile("!docker")
     @Scope(SCOPE_PROTOTYPE)
+    public RemoteWebDriver getRemoteWebDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+                                              SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+        if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.docker) {
+            return testContainersChromeDriver(wrapper, webDriverManager, spockGebQuickstartConfiguration);
+        } else {
+            return chromeDriver(wrapper, webDriverManager, spockGebQuickstartConfiguration);
+        }
+    }
+
     public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
                                         SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
         Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserUpProxy(), InetAddress.getLoopbackAddress());
@@ -85,9 +91,7 @@ public class BrowserConfiguration {
         return new ChromeDriver(chromeOptions);
     }
 
-    @Bean
-    @Profile("docker")
-    @Scope(SCOPE_PROTOTYPE)
+
     public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
                                                       SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
 

@@ -24,7 +24,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew clean spock-geb-quickstart:build -i --stacktrace -Pprofile=docker
+      env:
+        SPRING_PROFILES_ACTIVE: ci
+      run: ./gradlew clean spock-geb-quickstart:build -i --stacktrace
   dependabot:
     needs: build
     runs-on: ubuntu-latest
