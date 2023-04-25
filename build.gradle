@@ -30,20 +30,20 @@ config {
     release = false
 
     info {
-        name        = 'spock-geb-quickstart'
-        vendor      = 'Roche'
+        name = 'spock-geb-quickstart'
+        vendor = 'Roche'
         description = 'This project simplifies executing Spock and Geb-based frontend tests.'
 
         links {
-            website      = 'https://github.com/Roche/spock-geb-quickstart'
+            website = 'https://github.com/Roche/spock-geb-quickstart'
             issueTracker = 'https://github.com/Roche/spock-geb-quickstart/issues'
-            scm          = 'https://github.com/Roche/spock-geb-quickstart.git'
+            scm = 'https://github.com/Roche/spock-geb-quickstart.git'
         }
 
         people {
             person {
-                id    = 'jerzykrlkroche'
-                name  = 'F. Hoffmann-La Roche Ltd'
+                id = 'jerzykrlkroche'
+                name = 'F. Hoffmann-La Roche Ltd'
                 roles = ['developer']
             }
         }
@@ -55,7 +55,9 @@ config {
 
     docs {
         javadoc {
-            enabled = false
+            autoLinks {
+                enabled = false
+            }
         }
     }
 
