@@ -121,7 +121,7 @@ dependencies {
     implementation('com.browserup:browserup-proxy-core:2.1.2')
     implementation('com.browserup:browserup-proxy-mitm:2.1.2')
 
-    implementation "org.testcontainers:selenium:1.17.6"
+    implementation "org.testcontainers:selenium:1.18.1"
 
     api "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 
