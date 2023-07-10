@@ -106,7 +106,7 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 
-    implementation "com.athaydes:spock-reports:2.4.0-groovy-4.0"
+    implementation "com.athaydes:spock-reports:2.5.0-groovy-4.0"
 
     api "org.gebish:geb-spock:7.0"
 
