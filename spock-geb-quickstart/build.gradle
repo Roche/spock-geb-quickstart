@@ -116,7 +116,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     implementation("io.github.bonigarcia:webdrivermanager:5.5.3")
 
-    implementation "org.testcontainers:selenium:1.17.6"
+    implementation "org.testcontainers:selenium:1.19.3"
 
     api "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 
