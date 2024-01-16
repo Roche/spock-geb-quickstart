@@ -253,7 +253,6 @@ def gebArtifacts = gebFeatureReport?.artifacts
             <th>Label</th>
             <th>Image</th>
             <th>Html</th>
-            <th>Har</th>
             <th>Logs</th>
             <th>Page object</th>
         </tr>
@@ -264,14 +263,12 @@ def gebArtifacts = gebFeatureReport?.artifacts
         def trCssClass = label.endsWith('-failure') ? 'geb-failure' : ''
         def imageFile = "./" + artifact.files.find { it.endsWith('png') }
         def domSnapshotFile = "./" + artifact.files.find { it.endsWith('html') }
-        def harFile = "./" + artifact.files.find { it.endsWith('har') }
         def logsFile = "./" + artifact.files.find { it.endsWith('txt') }
         %>
         <tr class="$trCssClass">
             <td>$label</td>
             <td><a href="$imageFile" target="_blank">png</a></td>
             <td><a href="$domSnapshotFile" target="_blank">html</a></td>
-            <td><a href="$harFile" target="_blank">har</a></td>
             <td><a href="$logsFile" target="_blank">logs</a></td>
             <td>${artifact.pageObject}</td>
         </tr>
@@ -330,7 +327,6 @@ if (unassignedArtifacts) {
             <th>Label</th>
             <th>Image</th>
             <th>Html</th>
-            <th>Har</th>
             <th>Logs</th>
             <th>Page object</th>
         </tr>
@@ -340,14 +336,12 @@ if (unassignedArtifacts) {
         def label = artifact.label
         def imageFile = "./" + artifact.files.find { it.endsWith('png') }
         def domSnapshotFile = "./" + artifact.files.find { it.endsWith('html') }
-        def harFile = "./" + artifact.files.find { it.endsWith('har') }
         def logsFile = "./" + artifact.files.find { it.endsWith('txt') }
         %>
         <tr>
             <td>$label</td>
             <td><a href="$imageFile">png</a></td>
             <td><a href="$domSnapshotFile">html</a></td>
-            <td><a href="$harFile" target="_blank">har</a></td>
             <td><a href="$logsFile" target="_blank">logs</a></td>
             <td>${artifact.pageObject}</td>
         </tr>

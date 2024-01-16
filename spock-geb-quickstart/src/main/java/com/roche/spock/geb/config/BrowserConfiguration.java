@@ -17,11 +17,8 @@
  */
 package com.roche.spock.geb.config;
 
-import com.browserup.bup.client.ClientUtil;
-import com.roche.spock.geb.har.BrowerUpProxyWrapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -39,9 +36,9 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Duration;
+import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
@@ -54,6 +51,7 @@ public class BrowserConfiguration {
 
     @Bean
     @Lazy(false)
+    @SuppressWarnings("java:S2696")
     public Object injectContext(ApplicationContext applicationContext) {
         BrowserConfiguration.applicationContext = applicationContext;
         return new Object();
@@ -68,21 +66,21 @@ public class BrowserConfiguration {
 
     @Bean
     @Scope(SCOPE_PROTOTYPE)
-    public RemoteWebDriver getRemoteWebDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+    public RemoteWebDriver getRemoteWebDriver(WebDriverManager webDriverManager,
                                               SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
         if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.docker) {
-            return testContainersChromeDriver(wrapper, webDriverManager, spockGebQuickstartConfiguration);
+            return testContainersChromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         } else {
-            return chromeDriver(wrapper, webDriverManager, spockGebQuickstartConfiguration);
+            return chromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         }
     }
 
-    public RemoteWebDriver chromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+    public RemoteWebDriver chromeDriver(WebDriverManager webDriverManager,
                                         SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(wrapper.getBrowserUpProxy(), InetAddress.getLoopbackAddress());
+
+        Objects.requireNonNull(webDriverManager, "WebDriverManager must not be null");
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setProxy(seleniumProxy).setAcceptInsecureCerts(true);
 
         if (spockGebQuickstartConfiguration.getBrowser() != null) {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
@@ -92,23 +90,18 @@ public class BrowserConfiguration {
     }
 
 
-    public RemoteWebDriver testContainersChromeDriver(BrowerUpProxyWrapper wrapper, WebDriverManager webDriverManager,
+    public RemoteWebDriver testContainersChromeDriver(WebDriverManager webDriverManager,
                                                       SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
 
-        InetSocketAddress proxyAddress = InetSocketAddress.createUnresolved("host.testcontainers.internal", wrapper.getPort());
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxyAddress);
+        Objects.requireNonNull(webDriverManager, "WebDriverManager must not be null");
 
         ChromeOptions chromeOptions = new ChromeOptions();
 
-        chromeOptions.setProxy(seleniumProxy)
-                .setAcceptInsecureCerts(true)
-                .addArguments("--disable-dev-shm-usage");
+        chromeOptions.addArguments("--disable-dev-shm-usage");
 
         if (spockGebQuickstartConfiguration.getBrowser() != null) {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
-
-        Testcontainers.exposeHostPorts(wrapper.getPort());
 
         BrowserWebDriverContainer<?> browserWebDriverContainer = getBrowserWebDriverContainer(spockGebQuickstartConfiguration)
                 .withCapabilities(chromeOptions)
@@ -140,17 +133,8 @@ public class BrowserConfiguration {
                 .withStartupTimeout(Duration.of(15, SECONDS));
     }
 
-    @Bean
-    public BrowerUpProxyWrapper browerMobProxyWrapper() {
-        return new BrowerUpProxyWrapper();
-    }
-
     public static RemoteWebDriver getChromeDriver() {
         return applicationContext.getBean(RemoteWebDriver.class);
-    }
-
-    public static BrowerUpProxyWrapper getBrowerUpProxyWrapper() {
-        return applicationContext.getBean(BrowerUpProxyWrapper.class);
     }
 
 }

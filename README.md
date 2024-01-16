@@ -8,7 +8,6 @@ This project simplifies executing Spock and Geb-based frontend tests.
 ## Features
 
 Out of the box:
-* HAR file recording (with [BrowserMob Proxy](https://github.com/lightbody/browsermob-proxy)),
 * Screenshot capturing,
 * A dockerized browser (with [Webdriver testcontainers](https://www.testcontainers.org/modules/webdriver_containers)),
 
@@ -23,8 +22,18 @@ gradlew :spock-geb-quickstart-more-examples:acceptanceTests
 
 Run tests with a dockerized browser:
 
+1. update the `application.yml` as below:
+
 ```
-SPRING_PROFILES_ACTIVE=docker gradlew :spock-geb-quickstart-simple-example:test
+# replace this setting:
+browser-type: local
+
+# with this one:
+browser-type: docker
+```
+
+```
+gradlew :spock-geb-quickstart-simple-example:test
 ```
 
 Check the test results:
@@ -54,3 +63,4 @@ Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of 
 ## License
 
 Project is released under [Apache License, Version 2.0](https://opensource.org/licenses/Apache-2.0) license.
+

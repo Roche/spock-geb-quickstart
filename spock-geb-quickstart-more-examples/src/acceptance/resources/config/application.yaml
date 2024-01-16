@@ -1,1 +1,5 @@
-com.roche.spock.geb.base-url: http://gebish.org
+com.roche.spock.geb:
+  base-url: http://gebish.org
+  # change to "docker" to enable Docker-based browser execution
+  # browser-type: docker
+  browser-type: local
