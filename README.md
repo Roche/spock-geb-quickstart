@@ -22,6 +22,16 @@ gradlew :spock-geb-quickstart-more-examples:acceptanceTests
 
 Run tests with a dockerized browser:
 
+1. update the `application.yml` as below:
+
+```
+# replace this setting:
+browser-type: local
+
+# with this one:
+browser-type: docker
+```
+
 ```
 gradlew :spock-geb-quickstart-simple-example:test
 ```
@@ -53,3 +63,4 @@ Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of 
 ## License
 
 Project is released under [Apache License, Version 2.0](https://opensource.org/licenses/Apache-2.0) license.
+
