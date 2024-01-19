@@ -27,6 +27,7 @@ class GebHomePage extends Page {
 
     static content = {
         manualsMenu { module(ManualsMenuModule) }
+        apisMenu { module(ApisMenuModule) }
     }
 }
 
@@ -44,10 +45,28 @@ class ManualsMenuModule extends Module {
     }
 }
 
+class ApisMenuModule extends Module {
+
+    static content = {
+        toggle { $("div.menu a.apis") }
+        linksContainer { $("#apis-menu") }
+        links { linksContainer.find("a") }
+    }
+
+    void open() {
+        toggle.click()
+        waitFor { !linksContainer.hasClass("animating") }
+    }
+}
+
 class TheBookOfGebPage extends Page {
     static at = { title.startsWith("The Book Of Geb") }
 
     static content = {
         webDriverLink { $("div#toc.toc2 a[href='#driver']") }
     }
+}
+
+class GebApiPage extends Page {
+    static at = { title.contains("Groovy API for Geb") }
 }
