@@ -113,13 +113,8 @@ dependencies {
     api group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
     api group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
 
-//    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.3'
-
     api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     implementation("io.github.bonigarcia:webdrivermanager:5.5.3")
-    implementation('com.browserup:browserup-proxy-core:2.1.2')
-    implementation('com.browserup:browserup-proxy-mitm:2.1.2')
 
     implementation "org.testcontainers:selenium:1.17.6"
 
