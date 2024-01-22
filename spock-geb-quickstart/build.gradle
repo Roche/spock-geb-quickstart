@@ -19,6 +19,8 @@ plugins {
     id 'org.kordamp.gradle.integration-test'
     id 'org.kordamp.gradle.functional-test'
     id 'signing'
+    id 'org.springframework.boot' version "3.2.2"
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 apply plugin: 'java'
@@ -95,7 +97,6 @@ functionalTest {
 ext {
     gebVersion = '7.0'
     seleniumVersion = '4.16.1'
-    springBootVersion = '3.2.2'
     nettyVersion = '4.1.105.Final'
 }
 
@@ -113,7 +114,7 @@ dependencies {
     api group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
     api group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
 
-    api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    api("org.springframework.boot:spring-boot-starter-test:3.2.2")
     implementation("io.github.bonigarcia:webdrivermanager:5.6.3")
 
     implementation "org.testcontainers:selenium:1.19.3"
@@ -123,6 +124,7 @@ dependencies {
     api "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
     api "org.seleniumhq.selenium:selenium-api:${seleniumVersion}"
     api "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+//    api "org.seleniumhq.selenium:selenium-http-jdk-client:${seleniumVersion}"
 
     implementation "io.netty:netty-all:${nettyVersion}"
 }
