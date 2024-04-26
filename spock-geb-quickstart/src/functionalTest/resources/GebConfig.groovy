@@ -30,6 +30,8 @@ reportingListener = new GebReportingListener()
 reportsDir = 'build/geb-spock-reports'
 reportOnTestFailureOnly = false
 
+quitDriverOnBrowserReset = true
+
 // defaults
 driver = { BrowserConfiguration.getChromeDriver() }
 
