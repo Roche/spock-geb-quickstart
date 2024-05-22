@@ -96,11 +96,11 @@ ext {
     gebVersion = '7.0'
     seleniumVersion = '4.20.0'
     springBootVersion = '3.1.11'
-    nettyVersion = '4.1.105.Final'
+    nettyVersion = '4.1.109.Final'
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:2.0.11'
+    implementation 'org.slf4j:slf4j-api:2.0.12'
 
     implementation('com.aoe:geb-spock-reports:0.3.0-RC1') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -110,13 +110,13 @@ dependencies {
 
     api "org.gebish:geb-spock:7.0"
 
-    api group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
-    api group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
+    api group: 'org.spockframework', name: 'spock-core', version: '2.4-M4-groovy-4.0'
+    api group: 'org.spockframework', name: 'spock-spring', version: '2.4-M4-groovy-4.0'
 
     api("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     implementation("io.github.bonigarcia:webdrivermanager:5.8.0")
 
-    implementation "org.testcontainers:selenium:1.19.7"
+    implementation "org.testcontainers:selenium:1.19.8"
 
     api "org.seleniumhq.selenium:selenium-remote-driver:${seleniumVersion}"
 
