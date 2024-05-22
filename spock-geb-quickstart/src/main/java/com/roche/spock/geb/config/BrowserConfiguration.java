@@ -73,7 +73,7 @@ public class BrowserConfiguration {
         if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.docker) {
             return testContainersChromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         } else if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.grid) {
-            return gridChromeDriver(webDriverManager, spockGebQuickstartConfiguration);
+            return gridChromeDriver(spockGebQuickstartConfiguration);
         } else {
             return chromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         }
@@ -150,20 +150,13 @@ public class BrowserConfiguration {
         return applicationContext.getBean(RemoteWebDriver.class);
     }
 
-    private RemoteWebDriver gridChromeDriver(WebDriverManager webDriverManager, SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+    private RemoteWebDriver gridChromeDriver(SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
         ChromeOptions chromeOptions = new ChromeOptions();
-//        chromeOptions.setCapability("browserVersion", "100");
-//        chromeOptions.setCapability("platformName", "Windows");
-// Showing a test name instead of the session id in the Grid UI
-//        chromeOptions.setCapability("se:name", "My simple test");
-// Other type of metadata can be seen in the Grid UI by clicking on the
-// session info or via GraphQL
-//        chromeOptions.setCapability("se:sampleMetadata", "Sample metadata value");
-//        webDriverManager.remoteAddress("http://127.0.0.1:5555").create();
-        try {
-            return new RemoteWebDriver(new URL("http://127.0.0.1:5555"), chromeOptions);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+
+        if (spockGebQuickstartConfiguration.getBrowser() != null) {
+            chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
+
+        return new RemoteWebDriver(spockGebQuickstartConfiguration.getBrowser().getGridAddress(), chromeOptions);
     }
 }

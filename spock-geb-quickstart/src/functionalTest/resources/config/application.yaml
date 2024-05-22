@@ -18,7 +18,7 @@
 
 com.roche.spock.geb:
   base-url: http://gebish.org
-  browser-type: grid
+  browser-type: local
 
   browser:
     docker-image-name: selenium/standalone-chrome:97.0
