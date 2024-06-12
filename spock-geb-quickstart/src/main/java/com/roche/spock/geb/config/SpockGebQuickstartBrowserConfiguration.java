@@ -19,7 +19,11 @@ public class SpockGebQuickstartBrowserConfiguration {
 
     private final URL gridAddress;
 
-    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName, String binary, URL gridAddress) {
+    private final BrowserStackConfiguration browserStack;
+
+    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName, String binary, URL gridAddress, BrowserStackConfiguration browserStack) {
+        this.gridAddress = gridAddress;
+        this.browserStack = browserStack;
 
         if (arguments != null) {
             this.arguments = Collections.unmodifiableList(new ArrayList<>(arguments));
@@ -51,4 +55,9 @@ public class SpockGebQuickstartBrowserConfiguration {
     public URL getGridAddress() {
         return gridAddress;
     }
+
+    public BrowserStackConfiguration getBrowserStack() {
+        return browserStack;
+    }
+
 }

@@ -1,0 +1,19 @@
+com.roche.spock.geb:
+  base-url: http://gebish.org
+  # change to "docker" to enable Docker-based browser execution
+  # browser-type: docker
+  browser-type: browserstack
+  browser:
+    browser-stack:
+      username: [TODO]
+      access-key: [TODO]
+      browser-name: Chrome
+      options:
+        os: Windows
+        osVersion: 10
+        browserVersion: 125
+        resolution: 1920x1080
+        projectName: Geb Spock
+        debug: true
+        networkLogs: true
+        telemetryLogs: true
