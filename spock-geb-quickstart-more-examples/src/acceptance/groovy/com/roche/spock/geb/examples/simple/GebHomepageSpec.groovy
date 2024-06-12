@@ -26,6 +26,7 @@ class GebHomepageSpec extends SpockGebQuickstartSpec {
 
     def "can access The Book of Geb via homepage"() {
         given:
+        driver.manage().window().maximize()
         to GebHomePage
 
         when:
