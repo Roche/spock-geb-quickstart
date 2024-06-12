@@ -17,6 +17,7 @@
  */
 package com.roche.spock.geb.config;
 
+import geb.driver.BrowserStackDriverFactory;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -35,9 +36,9 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -72,9 +73,23 @@ public class BrowserConfiguration {
             return testContainersChromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         } else if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.grid) {
             return gridChromeDriver(spockGebQuickstartConfiguration);
+        } else if (spockGebQuickstartConfiguration.getBrowserType() == BrowserType.browserstack) {
+            return browserStackChromeDriver(spockGebQuickstartConfiguration);
         } else {
             return chromeDriver(webDriverManager, spockGebQuickstartConfiguration);
         }
+    }
+
+    private RemoteWebDriver browserStackChromeDriver(SpockGebQuickstartConfiguration spockGebQuickstartConfiguration) {
+        BrowserStackConfiguration browserStack = spockGebQuickstartConfiguration.getBrowser().getBrowserStack();
+        Map<String, Object> capabilities = new HashMap<>();
+        capabilities.put("browserName", browserStack.getBrowser());
+        Map<String, Object> browserStackOptions = browserStack.getOptions();
+        if (browserStackOptions != null) {
+            capabilities.put("bstack:options", browserStackOptions);
+        }
+        return (RemoteWebDriver) new BrowserStackDriverFactory()
+                .create(browserStack.getUsername(), browserStack.getAccessKey(), capabilities);
     }
 
     public RemoteWebDriver chromeDriver(WebDriverManager webDriverManager,
@@ -146,6 +161,8 @@ public class BrowserConfiguration {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
 
-        return new RemoteWebDriver(spockGebQuickstartConfiguration.getBrowser().getGridAddress(), chromeOptions);
+        RemoteWebDriver remoteWebDriver = new RemoteWebDriver(spockGebQuickstartConfiguration.getBrowser().getGridAddress(), chromeOptions);
+        remoteWebDriver.setFileDetector(new LocalFileDetector());
+        return remoteWebDriver;
     }
 }
