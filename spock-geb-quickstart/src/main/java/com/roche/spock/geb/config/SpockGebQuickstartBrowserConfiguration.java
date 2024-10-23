@@ -14,7 +14,9 @@ public class SpockGebQuickstartBrowserConfiguration {
 
     private final String dockerImageName;
 
-    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName) {
+    private final String binary;
+
+    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName, String binary) {
 
         if (arguments != null) {
             this.arguments = Collections.unmodifiableList(new ArrayList<>(arguments));
@@ -27,6 +29,8 @@ public class SpockGebQuickstartBrowserConfiguration {
         } else {
             this.dockerImageName = DEFAULT_DOCKER_CHROME_IMAGE;
         }
+
+        this.binary = binary;
     }
 
     public List<String> getArguments() {
@@ -35,5 +39,9 @@ public class SpockGebQuickstartBrowserConfiguration {
 
     public String getDockerImageName() {
         return dockerImageName;
+    }
+
+    public String getBinary() {
+        return binary;
     }
 }
