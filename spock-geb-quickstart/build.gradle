@@ -96,7 +96,7 @@ ext {
     gebVersion = '7.0'
     seleniumVersion = '4.20.0'
     springBootVersion = '3.1.11'
-    nettyVersion = '4.1.109.Final'
+    nettyVersion = '4.1.114.Final'
 }
 
 dependencies {
