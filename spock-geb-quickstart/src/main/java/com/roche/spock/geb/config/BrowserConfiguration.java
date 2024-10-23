@@ -35,6 +35,8 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -80,8 +82,17 @@ public class BrowserConfiguration {
 
         ChromeOptions chromeOptions = new ChromeOptions();
 
-        if (spockGebQuickstartConfiguration.getBrowser() != null) {
-            chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
+        SpockGebQuickstartBrowserConfiguration browser = spockGebQuickstartConfiguration.getBrowser();
+
+        if (browser != null) {
+            chromeOptions.addArguments(browser.getArguments());
+
+            if (browser.getBinary() != null) {
+                if (!Files.exists(Path.of(browser.getBinary()))) {
+                    throw new IllegalArgumentException("Browser binary not found: [" + browser.getBinary() + "]");
+                }
+                chromeOptions.setBinary(browser.getBinary());
+            }
         }
 
         return new ChromeDriver(chromeOptions);
