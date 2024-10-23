@@ -33,6 +33,10 @@ abstract class SpockGebQuickstartSpec extends GebReportingSpec {
     @Autowired
     SpockGebQuickstartConfiguration spockGebQuickstartConfiguration
 
+    def setupSpec() {
+//        browser.setDriver(null)
+    }
+
     def setup() {
         browser.baseUrl = spockGebQuickstartConfiguration.baseUrl
     }

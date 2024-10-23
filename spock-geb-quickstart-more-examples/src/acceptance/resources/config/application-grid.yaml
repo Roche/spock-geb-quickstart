@@ -1,0 +1,9 @@
+com.roche.spock.geb:
+  base-url: http://gebish.org
+  # change to "docker" to enable Docker-based browser execution
+  # browser-type: docker
+  browser-type: grid
+  browser:
+    grid-address: http://127.0.0.1:5555
+    arguments:
+      - --headless
