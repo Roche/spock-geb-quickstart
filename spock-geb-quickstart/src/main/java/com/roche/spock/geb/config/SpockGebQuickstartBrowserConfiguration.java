@@ -2,6 +2,7 @@ package com.roche.spock.geb.config;
 
 import org.springframework.util.StringUtils;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +15,15 @@ public class SpockGebQuickstartBrowserConfiguration {
 
     private final String dockerImageName;
 
-    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName) {
+    private final String binary;
+
+    private final URL gridAddress;
+
+    private final BrowserStackConfiguration browserStack;
+
+    public SpockGebQuickstartBrowserConfiguration(List<String> arguments, String dockerImageName, String binary, URL gridAddress, BrowserStackConfiguration browserStack) {
+        this.gridAddress = gridAddress;
+        this.browserStack = browserStack;
 
         if (arguments != null) {
             this.arguments = Collections.unmodifiableList(new ArrayList<>(arguments));
@@ -27,6 +36,8 @@ public class SpockGebQuickstartBrowserConfiguration {
         } else {
             this.dockerImageName = DEFAULT_DOCKER_CHROME_IMAGE;
         }
+
+        this.binary = binary;
     }
 
     public List<String> getArguments() {
@@ -36,4 +47,17 @@ public class SpockGebQuickstartBrowserConfiguration {
     public String getDockerImageName() {
         return dockerImageName;
     }
+
+    public String getBinary() {
+        return binary;
+    }
+
+    public URL getGridAddress() {
+        return gridAddress;
+    }
+
+    public BrowserStackConfiguration getBrowserStack() {
+        return browserStack;
+    }
+
 }
