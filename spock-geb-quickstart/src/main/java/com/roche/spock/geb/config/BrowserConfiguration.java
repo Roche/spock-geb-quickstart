@@ -36,8 +36,6 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -173,6 +171,8 @@ public class BrowserConfiguration {
         if (spockGebQuickstartConfiguration.getBrowser() != null) {
             chromeOptions.addArguments(spockGebQuickstartConfiguration.getBrowser().getArguments());
         }
+
+        chromeOptions.setCapability("enableVNC",true);
 
         RemoteWebDriver remoteWebDriver = new RemoteWebDriver(spockGebQuickstartConfiguration.getBrowser().getGridAddress(), chromeOptions);
         remoteWebDriver.setFileDetector(new LocalFileDetector());
